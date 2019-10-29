@@ -54,9 +54,9 @@ class UserTable {
     const db = DBCommon.get();
     const users: User[] = [];
     return new Promise((resolve, reject) => {
-      db.get(`SELECT * FROM ${userTableName}`, (err, rows) => {
+      db.all(`SELECT * FROM ${userTableName}`, (err, rows) => {
         if (err) return reject(err);
-        rows.array.forEach(row =>
+        rows.forEach(row =>
           users.push(new User(row["id"], row["name"], row["email"]))
         );
         return resolve(users);
