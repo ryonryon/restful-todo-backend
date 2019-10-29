@@ -1,3 +1,5 @@
+// TODO https://qiita.com/tashxii/items/7c86f39fced68ea9903d
+
 import { DBCommon } from "../singleton/userTable";
 
 const userTableName = "user";
