@@ -1,11 +1,15 @@
-import express from "express";
+import express, { Request, Response } from "express";
+import bodyParser from "body-parser";
+
+import todo from "./controller/todo";
 
 const app = express();
 const port = 8080;
 
-app.get("/", (req, res) => {
-  res.status(200).send("hello world");
-});
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+
+app.use("/todo", todo);
 
 app.listen(port, () => {
   // tslint:disable-next-line:no-console
