@@ -5,6 +5,8 @@
 
 ### Typescript
 
+参考：　https://qiita.com/notakaos/items/3bbd2293e2ff286d9f49
+
 typescript パッケージの追加
 `npm install -D typescript @types/node`
 
