@@ -1,5 +1,13 @@
-function hello(name: string): string {
-  return `Hello, ${name}!`;
-}
+import express from "express";
 
-console.log(hello("Typescript"));
+const app = express();
+const port = 8080;
+
+app.get("/", (req, res) => {
+  res.status(200).send("hello world");
+});
+
+app.listen(port, () => {
+  // tslint:disable-next-line:no-console
+  console.log(`server started at http://localhost:${port}`);
+});
