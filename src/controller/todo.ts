@@ -11,13 +11,17 @@ router.get("/", (req: Request, res: Response) => {
     if (err) console.error(err);
     rows.forEach(row => todos.push(new Todo(row.id, row.title)));
 
-    console.log(todos);
-    res.status(200).json(JSON.stringify(todos));
+    res.status(200).json(todos);
   });
 
   db.close();
 });
 
-router.post("/", (req: Request, res: Response) => {});
+router.post("/", (req: Request, res: Response) => {
+  db.run("INSERT INTO todos (title) VALUES (?)", [req.body.title]);
+  db.close();
+
+  res.status(200).send("ok");
+});
 
 export default router;
