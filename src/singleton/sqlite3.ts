@@ -11,7 +11,7 @@ const db = new sqlite3Impl.Database("./db.sqlite3", err => {
 
 function createTables() {
   db.run(
-    "CREATE TABLE IF NOT EXISTS todos(id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT)"
+    "CREATE TABLE IF NOT EXISTS todo(id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT)"
   );
 }
 
