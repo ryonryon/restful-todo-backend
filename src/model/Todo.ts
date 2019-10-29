@@ -1,10 +1,11 @@
 class Todo {
+  id: number;
   title: string;
-  createdAt: Date;
 
-  constructor(title: string) {
+  constructor(id: number, title: string) {
+    this.id = id;
     this.title = title;
-    const now = new Date();
-    this.createdAt = now;
   }
 }
+
+export default Todo;
