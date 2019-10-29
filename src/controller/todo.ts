@@ -7,7 +7,7 @@ const router = express.Router();
 
 router.get("/", (req: Request, res: Response) => {
   let todos: Todo[] = [];
-  db.all("SELECT id, title FROM todos", function(err, rows) {
+  db.all("SELECT id, title FROM todo", function(err, rows) {
     if (err) console.error(err);
     rows.forEach(row => todos.push(new Todo(row.id, row.title)));
 
@@ -18,7 +18,7 @@ router.get("/", (req: Request, res: Response) => {
 });
 
 router.post("/", (req: Request, res: Response) => {
-  db.run("INSERT INTO todos (title) VALUES (?)", [req.body.title]);
+  db.run("INSERT INTO todo (title) VALUES (?)", [req.body.title]);
   db.close();
 
   res.status(200).send("ok");
