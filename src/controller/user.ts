@@ -45,12 +45,12 @@ router.get("/all", async (req: Request, res: Response) => {
 });
 
 router.delete("/", async (req: Request, res: Response) => {
-  const id: number = req.body["id"];
+  const userId: number = req.body["userId"];
 
   DBCommon.init();
 
   try {
-    await UserTable.deleteUser(id);
+    await UserTable.deleteUser(userId);
 
     res.status(200).send("User is successfully deleted.");
   } catch (err) {

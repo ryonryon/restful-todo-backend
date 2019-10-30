@@ -1,10 +1,10 @@
 class User {
-  id: number;
+  userId: number;
   name: string;
   email: string;
 
-  constructor(id: number = NaN, name: string, email: string) {
-    this.id = id;
+  constructor(userId: number = NaN, name: string, email: string) {
+    this.userId = userId;
     this.name = name;
     this.email = email;
   }
