@@ -3,18 +3,26 @@ import TodoTable, { DBCommon } from "../singleton/todoTable";
 
 const router = express.Router();
 
-router.get("/all", async (req: Request, res: Response) => {
+router.get("/todo/all", async (req: Request, res: Response) => {
   DBCommon.init();
   res.status(200).send(await TodoTable.getTodos());
 });
 
-router.get("/:todo_id", async (req: Request, res: Response) => {
-  const todoId = Number(req.params["todo_id"]);
-  if (isNaN(todoId)) res.status(401).send("The id isn't number");
-  res.status(200).send(await TodoTable.getTodo(todoId));
+router.get("/:user_id/todo/all", async (req: Request, res: Response) => {
+  const userId = Number(req.params.user_id);
+  DBCommon.init();
+  res.status(200).send(await TodoTable.getTodos(userId));
 });
 
-router.post("/done", async (req: Request, res: Response) => {
+router.get("/:user_id/todo/:todo_id", async (req: Request, res: Response) => {
+  const userId = Number(req.params.user_id);
+  const todoId = Number(req.params.todo_id);
+  if (isNaN(userId)) res.status(401).send("The user id isn't number");
+  if (isNaN(todoId)) res.status(401).send("The todo id isn't number");
+  res.status(200).send(await TodoTable.getTodo(userId, todoId));
+});
+
+router.post("/todo/done", async (req: Request, res: Response) => {
   const todoId = req.body["todo_id"];
   DBCommon.init();
   try {
@@ -26,7 +34,7 @@ router.post("/done", async (req: Request, res: Response) => {
   }
 });
 
-router.post("/new", async (req: Request, res: Response) => {
+router.post("/todo/new", async (req: Request, res: Response) => {
   const userId = req.body["user_id"];
   const title = req.body["title"];
 
@@ -44,7 +52,7 @@ router.post("/new", async (req: Request, res: Response) => {
   }
 });
 
-router.delete("/", async (req: Request, res: Response) => {
+router.delete("/todo/delete", async (req: Request, res: Response) => {
   const todoId = req.body["todo_id"];
 
   try {

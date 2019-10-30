@@ -10,7 +10,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use("/user", user);
-app.use("/todo", todo);
+app.use("/", todo);
 
 app.listen(port, () => {
   // tslint:disable-next-line:no-console
