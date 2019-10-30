@@ -1,27 +1,30 @@
 import express, { Request, Response } from "express";
-
-import Todo from "../model/Todo";
-import db from "../singleton/sqlite3";
+import TodoTable, { DBCommon } from "../singleton/todoTable";
 
 const router = express.Router();
 
-router.get("/", (req: Request, res: Response) => {
-  let todos: Todo[] = [];
-  db.all("SELECT id, title FROM todo", function(err, rows) {
-    if (err) console.error(err);
-    rows.forEach(row => todos.push(new Todo(row.id, row.title)));
-
-    res.status(200).json(todos);
-  });
-
-  db.close();
+router.get("/all", async (req: Request, res: Response) => {
+  DBCommon.init();
+  res.status(200).send(await TodoTable.getTodos());
 });
 
-router.post("/", (req: Request, res: Response) => {
-  db.run("INSERT INTO todo (title) VALUES (?)", [req.body.title]);
-  db.close();
+router.post("/new", async (req: Request, res: Response) => {
+  const userId = req.body["user_id"];
+  const title = req.body["title"];
 
-  res.status(200).send("ok");
+  DBCommon.init();
+  await TodoTable.createTableIfNotExists();
+
+  // 存在確認
+
+  try {
+    await TodoTable.createTodo(userId, title);
+
+    res.status(200).send("Todo is successfully added.");
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Todo couldn't be added");
+  }
 });
 
 export default router;
