@@ -1,6 +1,6 @@
 import express, { Request, Response } from "express";
 
-import UserTable, { DBCommon } from "../controller/userTable";
+import UserTable, { DBCommon } from "../singleton/userTable";
 
 const router = express.Router();
 
