@@ -27,4 +27,17 @@ router.post("/new", async (req: Request, res: Response) => {
   }
 });
 
+router.delete("/", async (req: Request, res: Response) => {
+  const todoId = req.body["todo_id"];
+
+  try {
+    await TodoTable.deleteTodo(todoId);
+
+    res.status(200).send("Todo is successfully deleted.");
+  } catch (err) {
+    console.error(err);
+    res.status(401).send("The id isn't valid id.");
+  }
+});
+
 export default router;
