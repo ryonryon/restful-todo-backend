@@ -1,5 +1,6 @@
-import express, { Request, Response } from "express";
+import express from "express";
 
+import user from "./controller/user";
 import todo from "./controller/todo";
 
 const app = express();
@@ -8,6 +9,7 @@ const port = 8080;
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+app.use("/user", user);
 app.use("/todo", todo);
 
 app.listen(port, () => {

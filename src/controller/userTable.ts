@@ -1,8 +1,19 @@
 // TODO https://qiita.com/tashxii/items/7c86f39fced68ea9903d
+import sqlite3 from "sqlite3";
+import User from "../model/User";
 
-import { DBCommon } from "../singleton/userTable";
-
+let database: sqlite3.Database;
 const userTableName = "user";
+
+export class DBCommon {
+  static init() {
+    database = new sqlite3.Database("user.sqlite3");
+  }
+
+  static get() {
+    return database;
+  }
+}
 
 class UserTable {
   static async createTableIfNotExists(): Promise<void> {
@@ -44,14 +55,15 @@ class UserTable {
 
   static async getUsers(): Promise<User[]> {
     const db = DBCommon.get();
-    const users: User[] = [];
     const query = `SELECT * FROM ${userTableName}`;
     return new Promise((resolve, reject) => {
       db.all(query, (err, rows) => {
         if (err) return reject(err);
-        rows.forEach(row =>
-          users.push(new User(row["id"], row["name"], row["email"]))
-        );
+        const users: User[] = [];
+        rows.forEach(row => {
+          users.push(new User(row["id"], row["name"], row["email"]));
+        });
+
         return resolve(users);
       });
     });
@@ -63,7 +75,7 @@ class UserTable {
     return new Promise((resolve, reject) => {
       db.get(query, [name, email], (err, row) => {
         if (err) return reject(err);
-        if (row === null) return resolve(null);
+        if (row === undefined) return resolve(null);
         return resolve(new User(row["id"], row["name"], row["email"]));
       });
     });
@@ -74,7 +86,7 @@ class UserTable {
     const query = `DELETE FROM ${userTableName} WHERE id = $id`;
     return new Promise((resolve, reject) => {
       try {
-        db.get(query, id);
+        db.get(query, [id]);
         return resolve();
       } catch (err) {
         return reject(err);
@@ -82,3 +94,5 @@ class UserTable {
     });
   }
 }
+
+export default UserTable;

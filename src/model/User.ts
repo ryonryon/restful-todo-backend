@@ -9,3 +9,5 @@ class User {
     this.email = email;
   }
 }
+
+export default User;
