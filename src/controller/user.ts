@@ -44,7 +44,7 @@ router.get("/all", async (req: Request, res: Response) => {
 });
 
 router.delete("/", async (req: Request, res: Response) => {
-  const userId: number = req.body["userId"];
+  const userId: number = req.body["user_id"];
 
   DBCommon.init();
 
