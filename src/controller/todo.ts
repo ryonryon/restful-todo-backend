@@ -8,6 +8,18 @@ router.get("/all", async (req: Request, res: Response) => {
   res.status(200).send(await TodoTable.getTodos());
 });
 
+router.post("/done", async (req: Request, res: Response) => {
+  const todoId = req.body["todo_id"];
+  DBCommon.init();
+  try {
+    await TodoTable.doneTodo(todoId);
+    res.status(200).send("Todo's status is successfully changed.");
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Todo couldn't be done");
+  }
+});
+
 router.post("/new", async (req: Request, res: Response) => {
   const userId = req.body["user_id"];
   const title = req.body["title"];
@@ -19,7 +31,6 @@ router.post("/new", async (req: Request, res: Response) => {
 
   try {
     await TodoTable.createTodo(userId, title);
-
     res.status(200).send("Todo is successfully added.");
   } catch (err) {
     console.error(err);

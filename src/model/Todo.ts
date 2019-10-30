@@ -9,12 +9,13 @@ class Todo {
     todoId: number = NaN,
     userId: number = NaN,
     title: string,
+    isDone: boolean,
     createdAt: Date
   ) {
     this.todoId = todoId;
     this.userId = userId;
     this.title = title;
-    this.isDone = false;
+    this.isDone = isDone;
     this.createdAt = createdAt;
   }
 }
