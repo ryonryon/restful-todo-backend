@@ -18,7 +18,7 @@ export class DBCommon {
 class TodoTable {
   static async createTableIfNotExists(): Promise<void> {
     const db = DBCommon.get();
-    const query = `CREATE TABLE IF NOT EXISTS ${todoTableName} (todo_id INTEGER PRIMARY KEY AUTOINCREMENT, user_id INTEGER, title TEXT, is_done INTEGER DEFAULT 0, created_at DATETIME DEFAULT CURRENT_TIMESTAMP )`;
+    const query = `CREATE TABLE IF NOT EXISTS ${todoTableName} (todo_id INTEGER PRIMARY KEY AUTOINCREMENT, user_id INTEGER, title TEXT, is_done INTEGER DEFAULT 0, created_at TEXT )`;
     return new Promise((resolve, reject) => {
       try {
         db.serialize(() => db.run(query));
@@ -43,7 +43,7 @@ class TodoTable {
               row["user_id"],
               row["title"],
               row["is_done"],
-              row["createdAt"]
+              new Date(row["created_at"])
             )
           )
         );
@@ -65,7 +65,7 @@ class TodoTable {
             row["user_id"],
             row["title"],
             row["isDone"],
-            row["created_at"]
+            new Date(row["created_at"])
           )
         );
       });
@@ -74,10 +74,12 @@ class TodoTable {
 
   static async createTodo(userId: number, title: string): Promise<void> {
     const db = DBCommon.get();
-    const query = `INSERT OR REPLACE INTO ${todoTableName} (user_id, title) VALUES ($user_id, $title)`;
+    const query = `INSERT OR REPLACE INTO ${todoTableName} (user_id, title, created_at) VALUES ($user_id, $title, $created_at)`;
+
+    const now = new Date();
     return new Promise((resolve, reject) => {
       try {
-        db.get(query, [userId, title]);
+        db.get(query, [userId, title, now.toUTCString()]);
         return resolve();
       } catch (err) {
         return reject(err);

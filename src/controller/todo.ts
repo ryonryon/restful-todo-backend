@@ -8,6 +8,12 @@ router.get("/all", async (req: Request, res: Response) => {
   res.status(200).send(await TodoTable.getTodos());
 });
 
+router.get("/:todo_id", async (req: Request, res: Response) => {
+  const todoId = Number(req.params["todo_id"]);
+  if (isNaN(todoId)) res.status(401).send("The id isn't number");
+  res.status(200).send(await TodoTable.getTodo(todoId));
+});
+
 router.post("/done", async (req: Request, res: Response) => {
   const todoId = req.body["todo_id"];
   DBCommon.init();
