@@ -29,11 +29,14 @@ class TodoTable {
     });
   }
 
-  static async getTodos(): Promise<Todo[]> {
+  static async getTodos(userId: number | null = null): Promise<Todo[]> {
     const db = DBCommon.get();
-    const query = `SELECT * FROM ${todoTableName}`;
+    const query =
+      userId === null
+        ? `SELECT * FROM ${todoTableName}`
+        : `SELECT * FROM ${todoTableName} WHERE user_id = $user_id`;
     return new Promise((resolve, reject) => {
-      db.all(query, (err, rows) => {
+      db.all(query, userId === null ? [] : [userId], (err, rows) => {
         if (err) return reject(err);
         const todos: Todo[] = [];
         rows.forEach(row =>
@@ -52,11 +55,11 @@ class TodoTable {
     });
   }
 
-  static async getTodo(todoId: number): Promise<Todo | null> {
+  static async getTodo(userId: number, todoId: number): Promise<Todo | null> {
     const db = DBCommon.get();
-    const query = `SELECT * FROM ${todoTableName} WHERE todo_id = $todo_id`;
+    const query = `SELECT * FROM ${todoTableName} WHERE user_id = $user_id AND todo_id = $todo_id`;
     return new Promise((resolve, reject) => {
-      db.get(query, [todoId], (err, row) => {
+      db.get(query, [userId, todoId], (err, row) => {
         if (err) return reject(err);
         if (row === undefined) return resolve(null);
         return resolve(
