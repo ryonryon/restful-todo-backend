@@ -25,12 +25,13 @@ router.post("/new", async (req: Request, res: Response) => {
   DBCommon.init();
   await UserTable.createTableIfNotExists();
 
-  // userが他にいないことの確認
+  if (await UserTable.getUser(name, email))
+    res.status(401).send("The user name and email is already exists.");
 
   try {
     await UserTable.createUser(name, email);
 
-    res.send(200).send("User is successfully added.");
+    res.status(200).send("User is successfully added.");
   } catch (err) {
     console.error(err);
   }
@@ -54,6 +55,7 @@ router.delete("/", async (req: Request, res: Response) => {
     res.status(200).send("User is successfully deleted.");
   } catch (err) {
     console.error(err);
+    res.status(401).send("The id isn't valid id.");
   }
 });
 
