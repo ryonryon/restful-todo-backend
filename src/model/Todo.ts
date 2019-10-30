@@ -1,10 +1,22 @@
 class Todo {
-  id: number;
+  todoId: number;
+  userId: number;
   title: string;
+  isDone: boolean;
+  createdAt: Date;
 
-  constructor(id: number, title: string) {
-    this.id = id;
+  constructor(
+    todoId: number = NaN,
+    userId: number = NaN,
+    title: string,
+    isDone: boolean,
+    createdAt: Date
+  ) {
+    this.todoId = todoId;
+    this.userId = userId;
     this.title = title;
+    this.isDone = isDone;
+    this.createdAt = createdAt;
   }
 }
 

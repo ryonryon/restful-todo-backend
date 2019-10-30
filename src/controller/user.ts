@@ -34,23 +34,22 @@ router.post("/new", async (req: Request, res: Response) => {
     res.status(200).send("User is successfully added.");
   } catch (err) {
     console.error(err);
+    res.status(500).send("User couldn't be added");
   }
 });
 
 router.get("/all", async (req: Request, res: Response) => {
   DBCommon.init();
-  const users = await UserTable.getUsers();
-
-  res.status(200).send(users);
+  res.status(200).send(await UserTable.getUsers());
 });
 
 router.delete("/", async (req: Request, res: Response) => {
-  const id: number = req.body["id"];
+  const userId: number = req.body["user_id"];
 
   DBCommon.init();
 
   try {
-    await UserTable.deleteUser(id);
+    await UserTable.deleteUser(userId);
 
     res.status(200).send("User is successfully deleted.");
   } catch (err) {

@@ -1,23 +1,60 @@
 import express, { Request, Response } from "express";
-
-import Todo from "../model/Todo";
-import db from "../singleton/sqlite3";
+import TodoTable, { DBCommon } from "../singleton/todoTable";
 
 const router = express.Router();
 
-router.get("/", (req: Request, res: Response) => {
-  let todos: Todo[] = [];
-  db.all("SELECT id, title FROM todos", function(err, rows) {
-    if (err) console.error(err);
-    rows.forEach(row => todos.push(new Todo(row.id, row.title)));
-
-    console.log(todos);
-    res.status(200).json(JSON.stringify(todos));
-  });
-
-  db.close();
+router.get("/all", async (req: Request, res: Response) => {
+  DBCommon.init();
+  res.status(200).send(await TodoTable.getTodos());
 });
 
-router.post("/", (req: Request, res: Response) => {});
+router.get("/:todo_id", async (req: Request, res: Response) => {
+  const todoId = Number(req.params["todo_id"]);
+  if (isNaN(todoId)) res.status(401).send("The id isn't number");
+  res.status(200).send(await TodoTable.getTodo(todoId));
+});
+
+router.post("/done", async (req: Request, res: Response) => {
+  const todoId = req.body["todo_id"];
+  DBCommon.init();
+  try {
+    await TodoTable.doneTodo(todoId);
+    res.status(200).send("Todo's status is successfully changed.");
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Todo couldn't be done");
+  }
+});
+
+router.post("/new", async (req: Request, res: Response) => {
+  const userId = req.body["user_id"];
+  const title = req.body["title"];
+
+  DBCommon.init();
+  await TodoTable.createTableIfNotExists();
+
+  // 存在確認
+
+  try {
+    await TodoTable.createTodo(userId, title);
+    res.status(200).send("Todo is successfully added.");
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Todo couldn't be added");
+  }
+});
+
+router.delete("/", async (req: Request, res: Response) => {
+  const todoId = req.body["todo_id"];
+
+  try {
+    await TodoTable.deleteTodo(todoId);
+
+    res.status(200).send("Todo is successfully deleted.");
+  } catch (err) {
+    console.error(err);
+    res.status(401).send("The id isn't valid id.");
+  }
+});
 
 export default router;

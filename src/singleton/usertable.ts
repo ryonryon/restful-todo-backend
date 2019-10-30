@@ -18,7 +18,7 @@ export class DBCommon {
 class UserTable {
   static async createTableIfNotExists(): Promise<void> {
     const db = DBCommon.get();
-    const query = `CREATE TABLE IF NOT EXISTS ${userTableName} (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, email TEXT )`;
+    const query = `CREATE TABLE IF NOT EXISTS ${userTableName} (user_id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, email TEXT )`;
     return new Promise((resolve, reject) => {
       try {
         db.serialize(() => db.run(query));
@@ -61,7 +61,7 @@ class UserTable {
         if (err) return reject(err);
         const users: User[] = [];
         rows.forEach(row => {
-          users.push(new User(row["id"], row["name"], row["email"]));
+          users.push(new User(row["user_id"], row["name"], row["email"]));
         });
 
         return resolve(users);
@@ -76,17 +76,17 @@ class UserTable {
       db.get(query, [name, email], (err, row) => {
         if (err) return reject(err);
         if (row === undefined) return resolve(null);
-        return resolve(new User(row["id"], row["name"], row["email"]));
+        return resolve(new User(row["user_id"], row["name"], row["email"]));
       });
     });
   }
 
-  static async deleteUser(id: number): Promise<void> {
+  static async deleteUser(userId: number): Promise<void> {
     const db = DBCommon.get();
-    const query = `DELETE FROM ${userTableName} WHERE id = $id`;
+    const query = `DELETE FROM ${userTableName} WHERE user_id = $user_id`;
     return new Promise((resolve, reject) => {
       try {
-        db.get(query, [id]);
+        db.get(query, [userId]);
         return resolve();
       } catch (err) {
         return reject(err);
